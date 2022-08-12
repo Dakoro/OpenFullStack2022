@@ -1,0 +1,19 @@
+.succes {
+    border: 2px solid rgb(0, 113, 0);
+    border-radius: 2px;
+    background-color: rgb(202, 193, 193);
+    padding: 10px;
+    font-size: 20px;
+    font-family: 'Times New Roman', Times, serif;
+    color: rgb(0, 113, 0)
+}
+
+.error {
+    border: 2px solid rgb(232, 17, 17);
+    border-radius: 2px;
+    background-color: rgb(202, 193, 193);
+    padding: 10px;
+    font-size: 20px;
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+    color: rgb(232, 17, 17);
+}
