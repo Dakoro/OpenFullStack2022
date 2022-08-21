@@ -1,0 +1,9 @@
+POST http://localhost:3003/api/blogs 
+Content-Type: application/json
+
+{
+    "title": "wait but why",
+    "author": "Tim Urban and Andrew Finn",
+    "url": "https://waitbutwhy.com/wait-but-who",
+    "likes": 1000
+}
