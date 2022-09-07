@@ -9,6 +9,10 @@ const api = supertest(app)
 
 describe('tests on blogs', () => {
   beforeEach(async () => {
+    await User.deleteMany({})
+    const passwordHash = await bcrypt.hash('shalashaska', 10)
+    const user = new User({ username: 'Adam', name: 'Ocelot', passwordHash })
+    await user.save()
     await Blog.deleteMany({})
     console.log('cleared')
     await Blog.insertMany(helper.initialsBlogs)
@@ -42,12 +46,17 @@ describe('tests on blogs', () => {
     
     const token = response.body.token
     console.log(token)
+    const user = await User.findOne({username: 'Adam' })
+    console.log(user)
+    const id = user.id
+    console.log(id)
 
     const blog = {
       title: 'test',
       author: 'John',
       url: 'https://fskdlhfsh',
-      likes: 50
+      likes: 50,
+      user: id,
     }
 
     await api
@@ -95,12 +104,26 @@ describe('tests on blogs', () => {
   })
 
   test('check the "title" and "url" properties of a new blog', async () => {
+    const login = {
+      username: 'Adam',
+      password: 'shalashaska'
+    }
+
+    const response = await api 
+      .post('/api/login')
+      .send(login)
+    
+    const token = response.body.token
+    console.log(token)
+
     const blog = {
       author: 'Adam',
-      likes: 10
+      url: 'https://gshlmjflksf',
     }
+
     await api
       .post('/api/blogs')
+      .set({ Authorization: `bearer ${token}` })
       .send(blog)
       .expect(400)
 
@@ -134,16 +157,48 @@ describe('tests on blogs', () => {
   })
 
   test('a blog has been deleted', async () => {
+    const login = {
+      username: 'Adam',
+      password: 'shalashaska'
+    }
+
+    const response = await api 
+      .post('/api/login')
+      .send(login)
     
-    const blogs = await helper.blogsInDb()
-    const blogToDelete = blogs[2]
-    const id = blogToDelete.id
+    const token = response.body.token
+    console.log(token)
+    const user = await User.findOne({username: 'Adam' })
+    console.log(user)
+    const id = user.id
+    console.log(id)
+
+    const blog = {
+      title: 'test',
+      author: 'John',
+      url: 'https://fskdlhfsh',
+      likes: 50,
+      user: id,
+    }
+
+    console.log(blog)
+
+    await api
+      .post('/api/blogs')
+      .set({ Authorization: `bearer ${token}` })
+      .send(blog)
+      .expect(201)
+      .expect('Content-Type', /application\/json/)
+    
+    const blogToDelete = await Blog.findOne({user: id})
+    console.log(blogToDelete)
     await api 
-      .delete(`/api/blogs/${id}`)
+      .delete(`/api/blogs/${blogToDelete.id}`)
+      .set({Authorization: `bearer ${token}`})
       .expect(204)
 
     const blogsAtEnd = await helper.blogsInDb()
-    expect(blogsAtEnd).toHaveLength(helper.initialsBlogs.length - 1)
+    expect(blogsAtEnd).toHaveLength(helper.initialsBlogs.length)
   })
 })
 
@@ -218,12 +273,11 @@ describe('test on login', () => {
       password: 'shalashaska'
     }
 
-    const response = await api 
+    await api 
       .post('/api/login')
       .send(login)
       .expect(200)
     
-    console.log(response.body.token)
   })
 })
 

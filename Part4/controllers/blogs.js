@@ -1,5 +1,5 @@
 const blogsRouter = require('express').Router()
-
+const { userExtrator, tokenExtractor} = require('../utils/middleware')
 const Blog = require('../models/blog')
 const User = require('../models/user')
 
@@ -13,7 +13,7 @@ blogsRouter.get('/', async (request, response) => {
 })
 
 
-blogsRouter.post('/', async (request, response) => {
+blogsRouter.post('/', userExtrator, tokenExtractor, async (request, response) => {
   const body = request.body
 
   // eslint-disable-next-line no-undef
@@ -39,7 +39,7 @@ blogsRouter.post('/', async (request, response) => {
   response.status(201).json(savedBlog)
 })
 
-blogsRouter.delete('/:id', async (request, response) => {
+blogsRouter.delete('/:id', userExtrator, tokenExtractor, async (request, response) => {
   // eslint-disable-next-line no-undef
   const user = request.user
 
