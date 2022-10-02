@@ -1,0 +1,10 @@
+POST http://localhost:3003/api/blogs 
+Content-Type: application/json
+Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6IlNuYWtlIiwiaWQiOiI2MzE1MGViODE5OWYzNDYyNmVhMDljOTEiLCJpYXQiOjE2NjI0ODA0NTV9.BLwGOhgj7xuzmAxku0xkB4PvFWXrlQJj0GKK4qdeOjI
+
+{
+    "title": "test ",
+    "author": "John",
+    "url": "https://fskdlhfsh",
+    "likes": 50
+}
